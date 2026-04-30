@@ -24,6 +24,7 @@ sudo apt-get update
 
 //Installation de mongod
 sudo apt-get install -y mongodb-org
+sudo systemctl 
 systemctl start mongod.service
 systemctl status mongod.service
 
