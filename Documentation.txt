@@ -36,7 +36,8 @@ Création des fichier de configuration
 npm install dotenv
 créer un fichier .env dans le racine du serveur
 
-
+//Installation de l'extension flutter
+https://docs.flutter.dev/install/quick
 
 
 
