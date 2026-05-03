@@ -1,0 +1,85 @@
+//Creation du projet
+//Coté Client
+
+$npm create vite@latest
+Nom package = Client
+Framework = React
+Variant = Javascript
+
+//coté serveur
+$mkdir serveur  
+$npm init -y    //initialisation du gestion de packetage
+$volta pin node@22  //choix du versions de node
+
+//Coté base de donnée
+
+/** 
+Installation de mongo db communauté edition pour les version d'ubuntu 22.0
+//ajout du source de telechargement du paquet
+curl -fsSL https://pgp.mongodb.com/server-8.0.asc |    sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg    --dearmor
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/8.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.2.list
+
+//Mettre à jour les paquet
+sudo apt-get update
+
+//Installation de mongod
+sudo apt-get install -y mongodb-org
+sudo systemctl 
+systemctl start mongod.service
+systemctl status mongod.service
+
+//Installation de mongoose pour accéder au donnée de la base
+npm install mongoose
+**/
+
+
+Création des fichier de configuration
+npm install dotenv
+créer un fichier .env dans le racine du serveur
+
+//Installation de l'extension flutter
+https://docs.flutter.dev/install/quick
+
+
+
+
+
+
+
+Documentation
+//pour mongodb
+https://www.mongodb.com/docs/get-started/?language=nodejs
+
+//express
+
+CRUD
+// controllers/userController.js
+const User = require("../models/User");
+
+// CREATE
+exports.createUser = async (req, res) => {
+  const user = await User.create(req.body);
+  res.json(user);
+};
+
+// READ
+exports.getUsers = async (req, res) => {
+  const users = await User.find();
+  res.json(users);
+};
+
+// UPDATE
+exports.updateUser = async (req, res) => {
+  const user = await User.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
+  res.json(user);
+};
+
+// DELETE
+exports.deleteUser = async (req, res) => {
+  await User.findByIdAndDelete(req.params.id);
+  res.json({ message: "Utilisateur supprimé" });
+};

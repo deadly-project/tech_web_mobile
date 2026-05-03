@@ -1,0 +1,9 @@
+#dépendance
+node_modules
+
+#variable d'environnement
+.env
+.env.local
+
+# Pour ne pas avoir mes configuration de vs code
+.vscode
