@@ -83,3 +83,9 @@ exports.deleteUser = async (req, res) => {
   await User.findByIdAndDelete(req.params.id);
   res.json({ message: "Utilisateur supprimé" });
 };
+
+
+=================== A faire pour tout le monde pour syncroniser avec le repo ========================
+git checkout --theirs frontend/flutter_application_1/lib/main.dart
+git add .
+git commit -m "Garde version distante"
