@@ -3,13 +3,18 @@ import pkg from "cors"
 import "dotenv/config"
 const app = express();
 const port = process.env.PORT;
+const cors = pkg
 
 app.use(express.json());
-app.use(pkg)
+app.use(cors())
 
-app.get('/', (req, res) => {
-    res.send("API OK");
+app.get('/test', (req, res) => {
+    console.log("Requête reçue");
+      res.json({
+        success: true,
+        message: "Connexion réussie"
+    });
 });
 
 
-app.listen(port, () => console.log("Server running"));
+app.listen(port,() => console.log("Server running"));

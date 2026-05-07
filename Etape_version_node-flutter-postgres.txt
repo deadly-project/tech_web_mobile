@@ -20,3 +20,11 @@ CREATE TABLE utilisateur (
     profil VARCHAR(70)
     role VARCHAR(20) DEFAULT 'client'
 );
+
+//verification firewall
+$ sudo ufw status 
+
+//si port absent, ajout du port 
+$ sudo ufw allow 3000
+
+

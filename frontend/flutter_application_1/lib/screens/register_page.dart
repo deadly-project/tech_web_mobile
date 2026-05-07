@@ -2,18 +2,25 @@ import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  RegisterPageState createState() => RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class RegisterPageState extends State<RegisterPage> {
   final nom = TextEditingController();
   final email = TextEditingController();
   final password = TextEditingController();
 
   void register() async {
     await ApiService.register(nom.text, email.text, password.text);
+    // ignore: use_build_context_synchronously
     Navigator.pop(context);
+  }
+
+  void test() async {
+    await ApiService.test();
+    // ignore: use_build_context_synchronously
   }
 
   @override
@@ -29,7 +36,13 @@ class _RegisterPageState extends State<RegisterPage> {
           ElevatedButton(
             onPressed: register,
             child: Text("Créer compte"),
-          )
+          ),
+          // ElevatedButton(
+          //   onPressed: test,
+          //   child: Text("Test connectivité"),
+          // ),
+
+
         ],
       ),
     );
