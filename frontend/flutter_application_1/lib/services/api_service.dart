@@ -27,22 +27,4 @@ class ApiService {
     return json.decode(res.body);
   }
 
-  static Future test() async{
-    try {
-
-      final res = await http.get(
-        Uri.parse("$baseUrl/"),
-      );
-
-      print("STATUS : ${res.statusCode}");
-      print("BODY : ${res.body}");
-
-      return json.decode(res.body);
-
-    } catch (e) {
-
-      print("ERREUR : $e");
-
-    }
-  }
 }

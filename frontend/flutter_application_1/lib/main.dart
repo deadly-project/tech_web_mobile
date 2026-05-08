@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'screens/login_page.dart';
-
+// import 'screens/login_page.dart';
+import 'screens/dashboard_page.dart';
 void main() {
   runApp(MyApp());
 }
@@ -13,7 +13,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'App Réseau',
       debugShowCheckedModeBanner: false,
-      home: LoginPage(), // 👈 page de départ
+      // home: LoginPage(), // 👈 page de départ
+      home: DashboardPage(),
     );
   }
 }

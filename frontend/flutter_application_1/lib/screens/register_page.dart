@@ -93,11 +93,6 @@ class RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  void test() async {
-    await ApiService.test();
-    // ignore: use_build_context_synchronously
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
