@@ -18,7 +18,7 @@ class RegisterPageState extends State<RegisterPage> {
       // ignore: use_build_context_synchronously
       //Navigator.pop(context);
       if (!mounted) return;
-bool closed = false;
+    bool closed = false;
 
     ScaffoldMessenger.of(context).showMaterialBanner(
       MaterialBanner(
@@ -116,8 +116,6 @@ bool closed = false;
           //   onPressed: test,
           //   child: Text("Test connectivité"),
           // ),
-
-
         ],
       ),
     );

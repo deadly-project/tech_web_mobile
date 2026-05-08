@@ -2,6 +2,8 @@ import 'dotenv/config'
 import { pool } from '../configuration/connection_db.js';
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
+
+const SECRET = process.env.SECRET_KEY
 //import  from "../configuration/connection_db.js"
 // REGISTER or CREATE A ACCOUNT
 export const register = async (req, res) => {
@@ -37,9 +39,35 @@ export const register = async (req, res) => {
 
 //LOGIN
 export const login = async (req, res) =>{
-  const { username, password } = req.body;
-  const request1 = await pool.query(
-      'SELECT password FROM utilisateur WHERE username=$1',
+  console.log("login");
+ try{
+    const { username, password } = req.body;
+    console.log("select");
+    const request1 = await pool.query(
+      'SELECT * FROM utilisateur WHERE username=$1',
       [username]
     );
+    
+    if (request1.rows.length === 0) {
+      return res.status(404).json({ error: "Utilisateur introuvable" });
+      console.log("introuvable");
+    }
+    const user = request1.rows[0];
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) {
+    console.log("fausse mdp");
+      return res.status(400).json({ error: "Mot de passe incorrect" });
+    }
+    console.log("vita");
+    const token = jwt.sign(
+      { id: user.id_user, role: user.role },
+      SECRET,
+      { expiresIn: '1d' }
+    );
+    console.log(token, user.username);
+    res.json({ token: token, user: user.id})
+  }catch(err){
+    console.error(err)
+  }
+    
 }
