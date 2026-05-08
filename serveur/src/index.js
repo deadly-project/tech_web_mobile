@@ -1,6 +1,8 @@
 import express from "express"
 import pkg from "cors"
 import "dotenv/config"
+import userRouter from  "./routes/users.js"
+import authRouter from  "./routes/authentification.js"
 const app = express();
 const port = process.env.PORT;
 const cors = pkg
@@ -16,5 +18,7 @@ app.get('/test', (req, res) => {
     });
 });
 
+app.use('/api/auth', authRouter);
+app.use('/user', userRouter);
 
 app.listen(port,() => console.log("Server running"));

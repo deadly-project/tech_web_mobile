@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const baseUrl = "http://198.168.88.200:3000";
+  static const baseUrl = "http://10.28.18.134:3000/api/auth";
 
-  static Future register(String nom, String email, String password) async {
+  static Future register(String username, String email, String password) async {
     final res = await http.post(Uri.parse("$baseUrl/register"),
         headers: {"Content-Type": "application/json"},
         body: json.encode({
-          "nom": nom,
+          "username": username,
           "email": email,
           "password": password
         }));
@@ -16,11 +16,11 @@ class ApiService {
     return json.decode(res.body);
   }
 
-  static Future login(String email, String password) async {
+  static Future login(String username, String password) async {
     final res = await http.post(Uri.parse("$baseUrl/login"),
         headers: {"Content-Type": "application/json"},
         body: json.encode({
-          "email": email,
+          "username": username,
           "password": password
         }));
 
@@ -31,7 +31,7 @@ class ApiService {
     try {
 
       final res = await http.get(
-        Uri.parse("$baseUrl/test"),
+        Uri.parse("$baseUrl/"),
       );
 
       print("STATUS : ${res.statusCode}");

@@ -14,10 +14,10 @@ $ \c notification_panne_reseau
 //Creation de la table Utilisateur
 CREATE TABLE utilisateur (
     id_user SERIAL PRIMARY KEY,
-    nom VARCHAR(50),
+    username VARCHAR(50),
     email VARCHAR(100) UNIQUE,
     password VARCHAR(100),
-    profil VARCHAR(70)
+    profil VARCHAR(70),
     role VARCHAR(20) DEFAULT 'client'
 );
 

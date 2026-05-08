@@ -5,7 +5,7 @@ const user = process.env.POSTGRES_USER;
 const password = process.env.POSTGRES_PASSWORD;
 const db = process.env.POSTRES_DB;
 
-export const pool_bd = new Pool({
+export const pool = new Pool({
   user: user,
   host: 'localhost',
   database: db,
