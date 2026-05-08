@@ -1,17 +1,24 @@
 import express from "express"
 import pkg from "cors"
 import "dotenv/config"
-import { connection } from "./configuration/connection_db.js";
+import userRouter from  "./routes/users.js"
+import authRouter from  "./routes/authentification.js"
 const app = express();
-const uri_db = process.env.MONGO_URI;
 const port = process.env.PORT;
+const cors = pkg
 
 app.use(express.json());
-app.use(pkg)
+app.use(cors())
 
-app.get('/', (req, res) => {
-    res.send("API OK");
+app.get('/test', (req, res) => {
+    console.log("Requête reçue");
+      res.json({
+        success: true,
+        message: "Connexion réussie"
+    });
 });
 
-connection(uri_db);
-app.listen(port, () => console.log("Server running"));
+app.use('/api/auth', authRouter);
+app.use('/user', userRouter);
+
+app.listen(port,() => console.log("Server running"));

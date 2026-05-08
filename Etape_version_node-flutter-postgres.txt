@@ -1,0 +1,30 @@
+Installer Postgres
+//Se connecter à l'Utilisateur postgres
+$ sudo -i -u postgres
+
+//Afficher le commande line de postgres
+$ psql
+
+//Creation base de donnée
+$ CREATE DATABASE Notification_panne_reseau;
+
+//Connection à la base de donnée
+$ \c notification_panne_reseau
+
+//Creation de la table Utilisateur
+CREATE TABLE utilisateur (
+    id_user SERIAL PRIMARY KEY,
+    username VARCHAR(50),
+    email VARCHAR(100) UNIQUE,
+    password VARCHAR(100),
+    profil VARCHAR(70),
+    role VARCHAR(20) DEFAULT 'client'
+);
+
+//verification firewall
+$ sudo ufw status 
+
+//si port absent, ajout du port 
+$ sudo ufw allow 3000
+
+
