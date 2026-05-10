@@ -27,4 +27,9 @@ $ sudo ufw status
 //si port absent, ajout du port 
 $ sudo ufw allow 3000
 
+//lien download
+http://192.168.168.117:3000/speedtest/download/50mb.bin
+
+//lien upload
+http://192.168.168.117:3000/speedtest/upload
 
