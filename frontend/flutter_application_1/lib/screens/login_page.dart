@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dashboard_page.dart';
 import '../services/api_service.dart';
 import 'register_page.dart';
 
@@ -15,9 +17,22 @@ class LoginPageState extends State<LoginPage> {
 
   void login() async {
     final res = await ApiService.login(email.text, password.text);
-
+    print(res);
     if (res['token'] != null) {
-      print("Login OK");
+      final token = res["token"];
+      print(token);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString("token", token);
+
+    Navigator.pushReplacement(
+      context,
+
+      MaterialPageRoute(
+        builder: (_) => const DashboardPage(),
+      ),
+    );
     } else {
       print("Erreur");
     }

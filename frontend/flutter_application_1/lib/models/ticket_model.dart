@@ -1,6 +1,6 @@
 class Ticket {
 
-  String id;
+  int id;
   String titre;
   String description;
   String statut;
@@ -14,7 +14,7 @@ class Ticket {
 
   factory Ticket.fromJson(Map<String, dynamic> json) {
     return Ticket(
-      id: json['_id'],
+      id: json['id'],
       titre: json['titre'],
       description: json['description'],
       statut: json['statut'],

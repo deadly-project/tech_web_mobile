@@ -47,7 +47,7 @@ export const createTicket = async (req, res) => {
 };
 
 export const getTickets = async (req, res) => {
-
+  console.log('liste ticket');
   try {
 
     const result = await pool.query(
