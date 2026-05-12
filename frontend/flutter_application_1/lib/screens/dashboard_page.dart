@@ -52,7 +52,7 @@ class _DashboardPageState
       });
 
     } catch (e) {
-      print(e);
+      debugPrint("$e");
     }
   }
 

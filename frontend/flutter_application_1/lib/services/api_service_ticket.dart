@@ -5,7 +5,7 @@ class ApiServiceTicket {
   
   final Dio dio = Dio(
     BaseOptions(
-      baseUrl: 'http://192.168.168.117:3000'
+      baseUrl: 'http://10.42.0.1:3000'
     )
   );
 
