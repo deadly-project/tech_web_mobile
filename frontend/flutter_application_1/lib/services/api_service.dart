@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const baseUrl = "http://192.168.168.117:3000/api/auth";
+  static const baseUrl = "http://10.42.0.1:3000/api/auth";
 
   static Future register(String username, String email, String password) async {
     final res = await http.post(Uri.parse("$baseUrl/register"),

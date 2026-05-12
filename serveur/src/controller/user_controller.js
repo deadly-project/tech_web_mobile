@@ -49,8 +49,8 @@ export const login = async (req, res) =>{
     );
     
     if (request1.rows.length === 0) {
-      return res.status(404).json({ error: "Utilisateur introuvable" });
       console.log("introuvable");
+      return res.status(404).json({ error: "Utilisateur introuvable" });
     }
     const user = request1.rows[0];
     const valid = await bcrypt.compare(password, user.password);
@@ -65,7 +65,7 @@ export const login = async (req, res) =>{
       { expiresIn: '1d' }
     );
     console.log(token, user.username);
-    res.json({ token: token, user: user.id})
+    res.json({ token: token, user: user.id_user});
   }catch(err){
     console.error(err)
   }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-// import 'screens/login_page.dart';
-import 'screens/dashboard_page.dart';
+import 'screens/splash_screen.dart';
+//import 'screens/login_page.dart';
+//import 'screens/SpeedTest_page.dart';
+//import 'screens/ticket_detail_page.dart';
+//import 'screens/create_ticket_page.dart';
 void main() {
   runApp(MyApp());
 }
@@ -13,8 +16,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'App Réseau',
       debugShowCheckedModeBanner: false,
-      // home: LoginPage(), // 👈 page de départ
-      home: DashboardPage(),
+      home: SplashScreen(),
+      //home: LoginPage(), // 👈 page de départ
+      //home: SpeedTestPage(),
+      //home:CreateTicketPage()
+      // home: TicketDetailPage(),
     );
   }
 }
