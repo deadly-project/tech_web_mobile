@@ -10,7 +10,7 @@ Stack utilisé : Flutter + Node js + Postgresql
 * **PostgreSQL** : [Télécharger PostgreSQL](https://www.postgresql.org/download/)
 
 
-* Installation de node et ses des dépendances de node js 🚀
+Installation de node et ses des dépendances de node js 🚀
 ```bash
 cd serveur
 npm install
