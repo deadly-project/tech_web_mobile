@@ -29,16 +29,16 @@ touch .env
 ```
 
 ** Inserer ces données de votre choix dans le fichier .env **
-POSTGRES_USER=votre_utilisateur_postgres
-POSTGRES_PASSWORD=votre_mot_de_passe_postgres
-POSTRES_DB=votre_base_de_donnée
-PORT=3000
+POSTGRES_USER=votre_utilisateur_postgres  
+POSTGRES_PASSWORD=votre_mot_de_passe_postgres  
+POSTRES_DB=votre_base_de_donnée  
+PORT=3000  
 
-#Pour_le_hashage
-SECRET_KEY="votre_secret_key"
-DEFAULT_ADMIN_USERNAME=username_admin
-DEFAULT_ADMIN_EMAIL=votre_email_admin@gmail.com
-DEFAULT_ADMIN_PASSWORD=password_admin
+#Pour_le_hashage  
+SECRET_KEY="votre_secret_key"  
+DEFAULT_ADMIN_USERNAME=username_admin  
+DEFAULT_ADMIN_EMAIL=votre_email_admin@gmail.com  
+DEFAULT_ADMIN_PASSWORD=password_admin  
 
 #Pour lancer le projet
 Lancer le frontend dans le dossier frontend/flutter_application_1
