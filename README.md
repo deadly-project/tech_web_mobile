@@ -28,7 +28,7 @@ cd serveur
 touch .env
 ```
 
-Inserer ces données de votre choix dans le fichier .env
+** Inserer ces données de votre choix dans le fichier .env **
 POSTGRES_USER=votre_utilisateur_postgres
 POSTGRES_PASSWORD=votre_mot_de_passe_postgres
 POSTRES_DB=votre_base_de_donnée
