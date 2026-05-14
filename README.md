@@ -1,14 +1,10 @@
-# tech_web_mobile
-https://chatgpt.com/gg/v/69f20027a0d8819d84672465f88bd548?token=ouDQngARPOjJxh8YeGtXDw
+# GESTION DE NOTIFICATION DE PANNE ET ANOMALIES RESEAU
 
-Projet MERN STACK pour la getion des prestation des enseignants
-
-Installer MongoDB pour la base de donnée sans atlas : :accessibility:
-
-Pour linux : Cliquer ici
-
-Pour window : Cliquer ici
+Stack utilisé : Flutter + Node js + Postgresql
 
 Installation des dépendances de node js 🚀
+Node version : v22.16.0
+$ cd serveur
+$ npm install
 
-$ npm install 
+Installation de Flutter
