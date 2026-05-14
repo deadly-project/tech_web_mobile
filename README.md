@@ -15,21 +15,18 @@ Allez dans le dossier du serveur et installez les dépendances :
 cd serveur
 npm install
 ```
-
-Installation de Flutter
-Documentation : https://docs.flutter.dev/install/manual 📖
-
 Installation des dependance de flutter
-$ cd frontend/flutter_application_1/
-$ flutter clean
-$ flutter pub get
-
-Installation de Postgresql
-Documentation : https://www.postgresql.org/download/ 📖
+```bash
+cd frontend/flutter_application_1/
+flutter clean
+flutter pub get
+```
 
 Crée le fichier de configutaion .env dans le dossier root du backend
-$ cd serveur
-$ touch .env
+```
+cd serveur
+touch .env
+```
 
 Inserer ces données de votre choix dans le fichier .env
 POSTGRES_USER=votre_utilisateur_postgres
