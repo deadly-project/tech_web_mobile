@@ -58,14 +58,19 @@ export const login = async (req, res) =>{
     console.log("fausse mdp");
       return res.status(400).json({ error: "Mot de passe incorrect" });
     }
-    console.log("vita");
+    console.log(user);
     const token = jwt.sign(
       { id: user.id_user, role: user.role },
       SECRET,
       { expiresIn: '1d' }
     );
-    console.log(token, user.username);
-    res.json({ token: token, user: user.id_user});
+    console.log(user);
+    res.json({ 
+      token: token, 
+      userId: user.id_user,
+      role: user.role,
+      username: user.username
+    });
   }catch(err){
     console.error(err)
   }

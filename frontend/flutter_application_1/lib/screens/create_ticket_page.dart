@@ -207,7 +207,7 @@ class _CreateTicketPageState extends State<CreateTicketPage> {
 
   Widget _buildDropdown() {
     return DropdownButtonFormField<String>(
-      value: typeProbleme,
+      initialValue: typeProbleme,
       items: types.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
       onChanged: (value) => setState(() => typeProbleme = value!),
       decoration: InputDecoration(

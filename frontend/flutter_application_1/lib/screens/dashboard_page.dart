@@ -52,7 +52,7 @@ class _DashboardPageState
       });
 
     } catch (e) {
-      debugPrint("$e");
+      print(e);
     }
   }
 
@@ -182,7 +182,7 @@ class _DashboardPageState
         actions: [
 
           IconButton(
-
+            
             icon: const Icon(Icons.add),
 
             tooltip: "Créer ticket",

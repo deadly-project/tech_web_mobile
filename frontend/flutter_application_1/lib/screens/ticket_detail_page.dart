@@ -1,6 +1,8 @@
 // ticket_detail_page.dart
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/ticket_model.dart';
 import '../services/api_service_ticket.dart';
 
@@ -14,20 +16,137 @@ class TicketDetailPage extends StatefulWidget {
   });
 
   @override
-  State<TicketDetailPage> createState() => _TicketDetailPageState();
+  State<TicketDetailPage> createState() =>
+      _TicketDetailPageState();
 }
 
-class _TicketDetailPageState extends State<TicketDetailPage> {
+class _TicketDetailPageState
+    extends State<TicketDetailPage> {
 
-  final ApiServiceTicket api = ApiServiceTicket();
+  final ApiServiceTicket api =
+      ApiServiceTicket();
 
-  final commentController = TextEditingController();
+  final commentController =
+      TextEditingController();
 
   bool loading = false;
 
+  /*
+  |--------------------------------------------------------------------------
+  | USER DATA
+  |--------------------------------------------------------------------------
+  */
+
+  String? role;
+
+  int? userId;
+
+  /*
+  |--------------------------------------------------------------------------
+  | COMMENTAIRES
+  |--------------------------------------------------------------------------
+  */
+
   List commentaires = [];
 
-  Color getStatusColor(String status) {
+  @override
+  void initState() {
+
+    super.initState();
+
+    initData();
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | INITIALISATION
+  |--------------------------------------------------------------------------
+  */
+
+  Future<void> initData() async {
+
+    await getUserData();
+
+    await loadComments();
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | GET USER DATA
+  |--------------------------------------------------------------------------
+  */
+
+  Future<void> getUserData() async {
+
+    SharedPreferences prefs =
+        await SharedPreferences.getInstance();
+
+    setState(() {
+
+      role = prefs.getString("role");
+
+      userId = prefs.getInt("userId");
+    });
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | LOAD COMMENTS
+  |--------------------------------------------------------------------------
+  */
+
+  Future<void> loadComments() async {
+
+    try {
+
+      final data =
+          await api.getComments(
+        widget.ticket.id,
+      );
+
+      setState(() {
+
+        commentaires = data;
+      });
+
+    } catch (e) {
+
+      print(e);
+    }
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | PERMISSIONS
+  |--------------------------------------------------------------------------
+  */
+
+  bool isOwner() {
+
+    return userId ==
+        widget.ticket.utilisateurId;
+  }
+
+  bool isTechnician() {
+
+    return role == "technicien"
+        ||
+        role == "admin";
+  }
+
+  bool isAdmin() {
+
+    return role == "admin";
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | STATUS COLOR
+  |--------------------------------------------------------------------------
+  */
+
+  Color getStatusColor(
+      String status) {
 
     switch (status) {
 
@@ -45,6 +164,12 @@ class _TicketDetailPageState extends State<TicketDetailPage> {
     }
   }
 
+  /*
+  |--------------------------------------------------------------------------
+  | ADD COMMENT
+  |--------------------------------------------------------------------------
+  */
+
   Future<void> addComment() async {
 
     if (commentController.text.isEmpty) {
@@ -57,30 +182,50 @@ class _TicketDetailPageState extends State<TicketDetailPage> {
 
     try {
 
-      await api.dio.post(
-        "/tickets/${widget.ticket.id}/comment",
-        data: {
-          "auteur": "Technicien",
-          "message": commentController.text
+      await api.addComment(
+
+        widget.ticket.id,
+
+        {
+          "auteur": role,
+          "message":
+              commentController.text
         },
       );
 
       setState(() {
 
         commentaires.add({
-          "auteur": "Technicien",
-          "message": commentController.text
-        });
 
+          "auteur": role,
+
+          "message":
+              commentController.text
+        });
       });
 
       commentController.clear();
 
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        const SnackBar(
+
+          content: Text(
+            "Commentaire ajouté",
+          ),
+        ),
+      );
+
     } catch (e) {
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
         SnackBar(
-          content: Text(e.toString()),
+          content: Text(
+            e.toString(),
+          ),
         ),
       );
 
@@ -92,31 +237,101 @@ class _TicketDetailPageState extends State<TicketDetailPage> {
     }
   }
 
-  Future<void> updateStatus(String status) async {
+  /*
+  |--------------------------------------------------------------------------
+  | UPDATE STATUS
+  |--------------------------------------------------------------------------
+  */
+
+  Future<void> updateStatus(
+      String status) async {
 
     try {
 
-      await api.updateStatus(widget.ticket.id, status);
+      await api.updateStatus(
+        widget.ticket.id,
+        status,
+      );
 
       setState(() {
-        widget.ticket.statut = status;
+
+        widget.ticket.statut =
+            status;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
         const SnackBar(
-          content: Text("Statut mis à jour"),
+
+          content: Text(
+            "Statut mis à jour",
+          ),
         ),
       );
 
     } catch (e) {
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
         SnackBar(
-          content: Text(e.toString()),
+          content: Text(
+            e.toString(),
+          ),
         ),
       );
     }
   }
+
+  /*
+  |--------------------------------------------------------------------------
+  | DELETE TICKET
+  |--------------------------------------------------------------------------
+  */
+
+  Future<void> deleteTicket() async {
+
+    try {
+
+      await api.deleteTicket(
+        widget.ticket.id,
+      );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        const SnackBar(
+
+          content: Text(
+            "Ticket supprimé",
+          ),
+        ),
+      );
+
+      Navigator.pop(context);
+
+    } catch (e) {
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        SnackBar(
+          content: Text(
+            e.toString(),
+          ),
+        ),
+      );
+    }
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | UI
+  |--------------------------------------------------------------------------
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -124,56 +339,125 @@ class _TicketDetailPageState extends State<TicketDetailPage> {
     return Scaffold(
 
       appBar: AppBar(
-        title: const Text("Détail Ticket"),
+
+        title: const Text(
+          "Détail Ticket",
+        ),
+
+        actions: [
+
+          /*
+          |--------------------------------------------------------------------------
+          | DELETE TICKET
+          |--------------------------------------------------------------------------
+          */
+
+          if (isOwner() || isAdmin())
+
+            IconButton(
+
+              onPressed:
+                  deleteTicket,
+
+              icon: const Icon(
+                Icons.delete,
+              ),
+            )
+        ],
       ),
 
       body: SingleChildScrollView(
 
-        padding: const EdgeInsets.all(20),
+        padding:
+            const EdgeInsets.all(20),
 
         child: Column(
 
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment:
+              CrossAxisAlignment.start,
 
           children: [
 
+            /*
+            |--------------------------------------------------------------------------
+            | TITLE
+            |--------------------------------------------------------------------------
+            */
+
             Text(
+
               widget.ticket.titre,
+
               style: const TextStyle(
+
                 fontSize: 24,
-                fontWeight: FontWeight.bold,
+
+                fontWeight:
+                    FontWeight.bold,
               ),
             ),
 
             const SizedBox(height: 15),
 
+            /*
+            |--------------------------------------------------------------------------
+            | STATUS
+            |--------------------------------------------------------------------------
+            */
+
             Container(
 
-              padding: const EdgeInsets.symmetric(
+              padding:
+                  const EdgeInsets.symmetric(
+
                 horizontal: 12,
+
                 vertical: 8,
               ),
 
               decoration: BoxDecoration(
-                color: getStatusColor(widget.ticket.statut),
-                borderRadius: BorderRadius.circular(10),
+
+                color: getStatusColor(
+                  widget.ticket.statut,
+                ),
+
+                borderRadius:
+                    BorderRadius.circular(
+                  10,
+                ),
               ),
 
               child: Text(
+
                 widget.ticket.statut,
+
                 style: const TextStyle(
+
                   color: Colors.white,
-                  fontWeight: FontWeight.bold,
+
+                  fontWeight:
+                      FontWeight.bold,
                 ),
               ),
             ),
 
-            const SizedBox(height: 25),
+            const SizedBox(height: 30),
+
+            /*
+            |--------------------------------------------------------------------------
+            | DESCRIPTION
+            |--------------------------------------------------------------------------
+            */
 
             const Text(
+
               "Description",
+
               style: TextStyle(
-                fontWeight: FontWeight.bold,
+
+                fontWeight:
+                    FontWeight.bold,
+
                 fontSize: 18,
               ),
             ),
@@ -181,7 +465,9 @@ class _TicketDetailPageState extends State<TicketDetailPage> {
             const SizedBox(height: 10),
 
             Text(
+
               widget.ticket.description,
+
               style: const TextStyle(
                 fontSize: 16,
               ),
@@ -189,98 +475,236 @@ class _TicketDetailPageState extends State<TicketDetailPage> {
 
             const SizedBox(height: 30),
 
-            const Text(
-              "Changer le statut",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
+            /*
+            |--------------------------------------------------------------------------
+            | OWNER ACTIONS
+            |--------------------------------------------------------------------------
+            */
+
+            if (isOwner()) ...[
+
+              Row(
+
+                children: [
+
+                  ElevatedButton.icon(
+
+                    onPressed: () {
+
+                      /*
+                      |--------------------------------------------------------------------------
+                      | PAGE MODIFICATION
+                      |--------------------------------------------------------------------------
+                      */
+
+                    },
+
+                    icon: const Icon(
+                      Icons.edit,
+                    ),
+
+                    label: const Text(
+                      "Modifier ticket",
+                    ),
+                  ),
+                ],
               ),
-            ),
 
-            const SizedBox(height: 10),
+              const SizedBox(height: 30),
+            ],
 
-            Wrap(
+            /*
+            |--------------------------------------------------------------------------
+            | TECHNICIAN ACTIONS
+            |--------------------------------------------------------------------------
+            */
 
-              spacing: 10,
+            if (isTechnician()) ...[
 
-              children: [
+              const Text(
 
-                ElevatedButton(
-                  onPressed: () {
-                    updateStatus("EN_ATTENTE");
-                  },
-                  child: const Text("EN_ATTENTE"),
+                "Changer le statut",
+
+                style: TextStyle(
+
+                  fontWeight:
+                      FontWeight.bold,
+
+                  fontSize: 18,
                 ),
+              ),
 
-                ElevatedButton(
-                  onPressed: () {
-                    updateStatus("EN_COURS");
-                  },
-                  child: const Text("EN_COURS"),
-                ),
+              const SizedBox(height: 15),
 
-                ElevatedButton(
-                  onPressed: () {
-                    updateStatus("RESOLU");
-                  },
-                  child: const Text("RESOLU"),
-                ),
-              ],
-            ),
+              Wrap(
 
-            const SizedBox(height: 30),
+                spacing: 10,
+
+                children: [
+
+                  ElevatedButton(
+
+                    onPressed: () {
+
+                      updateStatus(
+                        "EN_ATTENTE",
+                      );
+                    },
+
+                    child: const Text(
+                      "EN ATTENTE",
+                    ),
+                  ),
+
+                  ElevatedButton(
+
+                    onPressed: () {
+
+                      updateStatus(
+                        "EN_COURS",
+                      );
+                    },
+
+                    child: const Text(
+                      "EN COURS",
+                    ),
+                  ),
+
+                  ElevatedButton(
+
+                    onPressed: () {
+
+                      updateStatus(
+                        "RESOLU",
+                      );
+                    },
+
+                    child: const Text(
+                      "RESOLU",
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 30),
+            ],
+
+            /*
+            |--------------------------------------------------------------------------
+            | COMMENTS
+            |--------------------------------------------------------------------------
+            */
 
             const Text(
+
               "Commentaires",
+
               style: TextStyle(
-                fontWeight: FontWeight.bold,
+
+                fontWeight:
+                    FontWeight.bold,
+
                 fontSize: 18,
               ),
             ),
 
             const SizedBox(height: 15),
 
-            TextField(
-              controller: commentController,
+            /*
+            |--------------------------------------------------------------------------
+            | COMMENT INPUT
+            |--------------------------------------------------------------------------
+            */
 
-              decoration: InputDecoration(
+            if (isTechnician()) ...[
 
-                hintText: "Ajouter un commentaire",
+              TextField(
 
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                controller:
+                    commentController,
 
-                suffixIcon: IconButton(
+                decoration:
+                    InputDecoration(
 
-                  onPressed: loading ? null : addComment,
+                  hintText:
+                      "Ajouter un commentaire",
 
-                  icon: loading
-                      ? const CircularProgressIndicator()
-                      : const Icon(Icons.send),
-                ),
-              ),
-            ),
+                  border:
+                      OutlineInputBorder(
 
-            const SizedBox(height: 20),
-
-            ...commentaires.map((comment) {
-
-              return Card(
-
-                child: ListTile(
-
-                  leading: const CircleAvatar(
-                    child: Icon(Icons.person),
+                    borderRadius:
+                        BorderRadius.circular(
+                      10,
+                    ),
                   ),
 
-                  title: Text(comment["auteur"]),
+                  suffixIcon:
+                      IconButton(
 
-                  subtitle: Text(comment["message"]),
+                    onPressed:
+                        loading
+                            ? null
+                            : addComment,
+
+                    icon: loading
+
+                        ? const Padding(
+
+                            padding:
+                                EdgeInsets
+                                    .all(
+                              10,
+                            ),
+
+                            child:
+                                CircularProgressIndicator(),
+                          )
+
+                        : const Icon(
+                            Icons.send,
+                          ),
+                  ),
                 ),
-              );
+              ),
 
-            }).toList()
+              const SizedBox(height: 20),
+            ],
+
+            /*
+            |--------------------------------------------------------------------------
+            | COMMENT LIST
+            |--------------------------------------------------------------------------
+            */
+
+            ...commentaires.map(
+
+              (comment) {
+
+                return Card(
+
+                  child: ListTile(
+
+                    leading:
+                        const CircleAvatar(
+
+                      child: Icon(
+                        Icons.person,
+                      ),
+                    ),
+
+                    title: Text(
+                      comment["auteur"]
+                          .toString(),
+                    ),
+
+                    subtitle: Text(
+                      comment["message"]
+                          .toString(),
+                    ),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
