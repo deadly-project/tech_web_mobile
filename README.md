@@ -42,12 +42,12 @@ DEFAULT_ADMIN_EMAIL=votre_email_admin@gmail.com
 DEFAULT_ADMIN_PASSWORD=password_admin  
 ```
 
-#Pour lancer le projet  
+Pour lancer le projet  🚀
 Lancer le frontend dans le dossier frontend/flutter_application_1
 ```bash
 flutter run
 ```
-Lancer le serveur dans le dossier serveur/
+Lancer le serveur dans le dossier serveur/ 🚀
 ```
 npm start
 ```
