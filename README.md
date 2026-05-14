@@ -10,19 +10,19 @@ Stack utilisé : Flutter + Node js + Postgresql
 * **PostgreSQL** : [Télécharger PostgreSQL](https://www.postgresql.org/download/)
 
 
-Installation de node et ses des dépendances de node js 🚀
+Installation de node et ses des dépendances de node js 💻
 ```bash
 cd serveur
 npm install
 ```
-Installation des dependance de flutter
+Installation des dependance de flutter 📱
 ```bash
 cd frontend/flutter_application_1/
 flutter clean
 flutter pub get
 ```
 
-Crée le fichier de configutaion .env dans le dossier root du backend
+Crée le fichier de configutaion .env dans le dossier root du backend :conf
 ```bash
 cd serveur
 touch .env
@@ -42,10 +42,12 @@ DEFAULT_ADMIN_EMAIL=votre_email_admin@gmail.com
 DEFAULT_ADMIN_PASSWORD=password_admin  
 ```
 
-#Pour lancer le projet
+#Pour lancer le projet  
 Lancer le frontend dans le dossier frontend/flutter_application_1
 ```bash
-$ flutter run
-
+flutter run
+```
 Lancer le serveur dans le dossier serveur/
-$ npm start
+```
+npm start
+```
