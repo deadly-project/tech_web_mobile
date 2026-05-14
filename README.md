@@ -9,8 +9,8 @@ Stack utilisé : Flutter + Node js + Postgresql
 * **Flutter SDK** : [Documentation d'installation](https://docs.flutter.dev/install/manual)
 * **PostgreSQL** : [Télécharger PostgreSQL](https://www.postgresql.org/download/)
 
-Installation de node et ses des dépendances de node js 🚀
-Allez dans le dossier du serveur et installez les dépendances :
+* Installation de node et ses des dépendances de node js 🚀
+* Allez dans le dossier du serveur et installez les dépendances :
 ```bash
 cd serveur
 npm install
