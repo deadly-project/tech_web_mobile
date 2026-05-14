@@ -3,7 +3,7 @@ import 'dotenv/config'
 const { Pool } = pkg;
 const user = process.env.POSTGRES_USER;
 const password = process.env.POSTGRES_PASSWORD;
-const db = process.env.POSTRES_DB;
+const db = process.env.POSTGRES_DB;
 
 export const pool = new Pool({
   user: user,
