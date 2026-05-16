@@ -5,7 +5,7 @@ import '../services/api_service_ticket.dart';
 import '../models/ticket_model.dart';
 
 import 'login_page.dart';
-import 'SpeedTest_page.dart';
+import 'speedtest_page.dart';
 import 'ticket_detail_page.dart';
 import 'create_ticket_page.dart';
 
