@@ -9,6 +9,7 @@ import authRouter from  "./routes/authentification.js"
 import speedtest from "./routes/test_debit_route.js"
 import ticketRouter from "./routes/ticker_routes.js"
 import { ensureFile } from "./controller/test_debit_controller.js"
+import { createDefaultAdmin } from "./configuration/create_admin.js";
 const app = express();
 const port = process.env.PORT;
 const cors = pkg
@@ -60,4 +61,6 @@ app.use('/user', userRouter);
 app.use('/speedtest', speedtest);
 app.use('/tickets', ticketRouter);
 
-app.listen(port, "0.0.0.0",() => console.log("Server running"));
+server.listen(port, "0.0.0.0",() => console.log("Server running"),
+    await createDefaultAdmin()
+);

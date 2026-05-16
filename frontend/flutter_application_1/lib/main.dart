@@ -4,7 +4,16 @@ import 'screens/splash_screen.dart';
 //import 'screens/SpeedTest_page.dart';
 //import 'screens/ticket_detail_page.dart';
 //import 'screens/create_ticket_page.dart';
-void main() {
+import 'services/notification_service.dart';
+import 'services/socket_service.dart';
+void main() async{
+  
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await NotificationService.init();
+
+  SocketService.connect();
+
   runApp(MyApp());
 }
 

@@ -1,14 +1,53 @@
-# tech_web_mobile
-https://chatgpt.com/gg/v/69f20027a0d8819d84672465f88bd548?token=ouDQngARPOjJxh8YeGtXDw
+# GESTION DE NOTIFICATION DE PANNE ET ANOMALIES RESEAU
 
-Projet MERN STACK pour la getion des prestation des enseignants
+Stack utilisé : Flutter + Node js + Postgresql
 
-Installer MongoDB pour la base de donnée sans atlas : :accessibility:
+## 🚀 Installation et Configuration
 
-Pour linux : Cliquer ici
+### 1. Prérequis
+* **Node.js** : `v22.16.0` ou supérieur
+* **Flutter SDK** : [Documentation d'installation](https://docs.flutter.dev/install/manual)
+* **PostgreSQL** : [Télécharger PostgreSQL](https://www.postgresql.org/download/)
 
-Pour window : Cliquer ici
 
-Installation des dépendances de node js 🚀
+Installation de node et ses des dépendances de node js 💻
+```bash
+cd serveur
+npm install
+```
+Installation des dependance de flutter 📱
+```bash
+cd frontend/flutter_application_1/
+flutter clean
+flutter pub get
+```
 
-$ npm install 
+Crée le fichier de configutaion .env dans le dossier root du backend :conf
+```bash
+cd serveur
+touch .env
+```
+
+** Inserer ces données de votre choix dans le fichier .env **
+```
+POSTGRES_USER=votre_utilisateur_postgres  
+POSTGRES_PASSWORD=votre_mot_de_passe_postgres  
+POSTRES_DB=votre_base_de_donnée  
+PORT=3000  
+
+#Pour_le_hashage  
+SECRET_KEY="votre_secret_key"  
+DEFAULT_ADMIN_USERNAME=username_admin  
+DEFAULT_ADMIN_EMAIL=votre_email_admin@gmail.com  
+DEFAULT_ADMIN_PASSWORD=password_admin  
+```
+
+Pour lancer le projet  🚀  
+Lancer le frontend dans le dossier frontend/flutter_application_1
+```bash
+flutter run
+```
+Lancer le serveur dans le dossier serveur/ 🚀
+```
+npm start
+```

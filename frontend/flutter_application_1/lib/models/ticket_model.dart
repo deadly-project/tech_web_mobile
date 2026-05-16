@@ -4,12 +4,14 @@ class Ticket {
   String titre;
   String description;
   String statut;
+  int utilisateurId;
 
   Ticket({
     required this.id,
     required this.titre,
     required this.description,
     required this.statut,
+    required this.utilisateurId,
   });
 
   factory Ticket.fromJson(Map<String, dynamic> json) {
@@ -18,6 +20,7 @@ class Ticket {
       titre: json['titre'],
       description: json['description'],
       statut: json['statut'],
+      utilisateurId: json['utilisateur_id'],
     );
   }
 }

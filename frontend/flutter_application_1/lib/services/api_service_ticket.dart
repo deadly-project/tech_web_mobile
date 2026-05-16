@@ -50,4 +50,99 @@ class ApiServiceTicket {
       options: Options(headers: headers),
     );
   }
+
+Future addComment(
+
+    int ticketId,
+
+    Map<String, dynamic> data,
+
+  ) async {
+
+    final headers =
+        await getHeaders();
+
+    return await dio.post(
+
+      '/tickets/$ticketId/comment',
+
+      data: data,
+
+      options: Options(
+        headers: headers,
+      ),
+    );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | GET COMMENTS
+  |--------------------------------------------------------------------------
+  */
+
+  Future<List<dynamic>> getComments(
+      int ticketId) async {
+
+    final headers =
+        await getHeaders();
+
+    final response = await dio.get(
+
+      '/tickets/$ticketId/comments',
+
+      options: Options(
+        headers: headers,
+      ),
+    );
+
+    return response.data;
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | DELETE COMMENT
+  |--------------------------------------------------------------------------
+  */
+
+  Future deleteComment(
+    int commentId,
+  ) async {
+
+    final headers =
+        await getHeaders();
+
+    return await dio.delete(
+
+      '/comments/$commentId',
+
+      options: Options(
+        headers: headers,
+      ),
+    );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | DELETE TICKET
+  |--------------------------------------------------------------------------
+  */
+
+  Future deleteTicket(
+    int ticketId,
+  ) async {
+
+    final headers =
+        await getHeaders();
+
+    return await dio.delete(
+
+      '/tickets/$ticketId',
+
+      options: Options(
+        headers: headers,
+      ),
+    );
+  }
+
+
 }

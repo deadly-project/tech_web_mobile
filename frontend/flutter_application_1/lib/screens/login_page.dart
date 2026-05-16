@@ -23,8 +23,14 @@ class LoginPageState extends State<LoginPage> {
       
       if (res['token'] != null) {
         final token = res["token"];
+        final role = res["role"];
+        final username = res["username"];
+        final userId = res["userId"];
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString("token", token);
+        await prefs.setString("role", role);
+        await prefs.setString("username", username);
+        await prefs.setInt("userId", userId);
 
         if (!mounted) return;
         Navigator.pushReplacement(
@@ -35,6 +41,7 @@ class LoginPageState extends State<LoginPage> {
         _showErrorSnackBar("Identifiants incorrects");
       }
     } catch (e) {
+      _showErrorSnackBar('$e');
       _showErrorSnackBar("Une erreur est survenue");
     } finally {
       setState(() => _isLoading = false);

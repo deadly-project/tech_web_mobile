@@ -2,6 +2,7 @@ import { pool } from '../configuration/connection_db.js';
 
 export const createTicket = async (req, res) => {
     console.log('create ticket')
+    console.log(req.user.id);
   try {
 
     const {
@@ -19,10 +20,11 @@ export const createTicket = async (req, res) => {
         titre,
         description,
         localisation,
-        type_probleme
+        type_probleme,
+        utilisateur_id
       )
 
-      VALUES($1,$2,$3,$4)
+      VALUES($1,$2,$3,$4,$5)
 
       RETURNING *
       `,
@@ -30,7 +32,8 @@ export const createTicket = async (req, res) => {
         titre,
         description,
         localisation,
-        typeProbleme
+        typeProbleme,
+        req.user.id
       ]
     );
     req.io.emit("new-ticket", result.rows[0]);
