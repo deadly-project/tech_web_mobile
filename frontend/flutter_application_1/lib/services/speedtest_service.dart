@@ -1,75 +1,152 @@
-import 'dart:io';
 import 'dart:async';
+import 'dart:io';
 
-    // final request = await client.postUrl(
-    //   Uri.parse("$baseUrl/upload"),
-    // );
 class SpeedTestService {
+
   final String baseUrl;
 
   SpeedTestService(this.baseUrl);
 
+  /*
+  |--------------------------------------------------------------------------
+  | DOWNLOAD TEST
+  |--------------------------------------------------------------------------
+  */
+
   Stream<double> download(String file) async* {
+
     final client = HttpClient();
 
-    final request = await client.getUrl(
-      Uri.parse("$baseUrl/download/$file"),
-    );
+    try {
 
-    final response = await request.close();
+      final request = await client.getUrl(
+        Uri.parse("$baseUrl/download/$file"),
+      );
 
-    int bytes = 0;
-    final stopwatch = Stopwatch()..start();
+      final response = await request.close();
 
-    await for (var chunk in response) {
-      bytes += chunk.length;
+      int bytes = 0;
 
-      final sec = stopwatch.elapsedMilliseconds / 1000;
-      if (sec > 0) {
-        yield (bytes * 8) / sec / (1024 * 1024);
+      final stopwatch = Stopwatch()
+        ..start();
+
+      await for (var chunk in response) {
+
+        bytes += chunk.length;
+
+        final sec =
+            stopwatch.elapsedMilliseconds /
+                1000;
+
+        if (sec > 0) {
+
+          final mbps =
+              (bytes * 8) /
+              sec /
+              (1024 * 1024);
+
+          yield mbps;
+        }
       }
+
+    } catch (e) {
+
+      throw Exception(
+        "Erreur download : $e",
+      );
+
+    } finally {
+
+      client.close();
     }
   }
 
-  Future<double> upload() async {
+  /*
+  |--------------------------------------------------------------------------
+  | UPLOAD TEST
+  |--------------------------------------------------------------------------
+  */
+
+  Stream<double> upload() async* {
+
     final client = HttpClient();
 
-  final request = await client.postUrl(
-    Uri.parse("$baseUrl/upload"),
-  );
-
-  final data = List<int>.generate(1024 * 50, (i) => i % 256); // petit chunk
-
-  int totalBytes = 0;
-  final stopwatch = Stopwatch()..start();
-
-  final completer = Completer<double>();
-
-  // ⏱ arrêt après 10 secondes
-  Timer(const Duration(seconds: 10), () async {
     try {
+
+      final request =
+          await client.postUrl(
+        Uri.parse("$baseUrl/upload"),
+      );
+
+      /*
+      |--------------------------------------------------------------------------
+      | DONNÉES ENVOYÉES
+      |--------------------------------------------------------------------------
+      */
+
+      final data =
+          List<int>.generate(
+        1024 * 50,
+        (i) => i % 256,
+      );
+
+      int totalBytes = 0;
+
+      final stopwatch = Stopwatch()
+        ..start();
+
+      /*
+      |--------------------------------------------------------------------------
+      | ENVOI CONTINU PENDANT 10s
+      |--------------------------------------------------------------------------
+      */
+
+      while (
+          stopwatch.elapsedMilliseconds <
+              10000) {
+
+        request.add(data);
+
+        totalBytes += data.length;
+
+        final sec =
+            stopwatch.elapsedMilliseconds /
+                1000;
+
+        if (sec > 0) {
+
+          final mbps =
+              (totalBytes * 8) /
+              sec /
+              (1024 * 1024);
+
+          yield mbps;
+        }
+
+        await Future.delayed(
+          const Duration(
+            milliseconds: 100,
+          ),
+        );
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | FIN REQUÊTE
+      |--------------------------------------------------------------------------
+      */
+
       await request.close();
 
-      final sec = stopwatch.elapsedMilliseconds / 1000;
+    } catch (e) {
 
-      final mbps = (totalBytes * 8) / sec / (1024 * 1024);
+      throw Exception(
+        "Erreur upload : $e",
+      );
 
-      if (!completer.isCompleted) {
-        completer.complete(mbps);
-      }
-    } catch (_) {}
-  });
+    } finally {
 
-  // 🔥 ENVOI CONTINU PENDANT 10s
-  while (stopwatch.elapsedMilliseconds < 10000) {
-    request.add(data);
-    totalBytes += data.length;
-
-    await Future.delayed(const Duration(milliseconds: 150));
-  }
-
-  await request.close();
-
-  return completer.future;
+      client.close();
+    }
   }
 }
