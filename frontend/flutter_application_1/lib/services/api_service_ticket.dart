@@ -144,5 +144,34 @@ Future addComment(
     );
   }
 
+  /*
+  |--------------------------------------------------------------------------
+  | UPDATE TICKET
+  |--------------------------------------------------------------------------
+  */
+Future<dynamic> updateTicket(
+
+  int id,
+
+  Map<String, dynamic> data,
+
+) async {
+
+  final headers =
+      await getHeaders();
+
+  final response = await dio.put(
+
+    '/tickets/$id',
+
+    data: data,
+
+    options: Options(
+      headers: headers,
+    ),
+  );
+
+  return response.data;
+}
 
 }

@@ -254,3 +254,105 @@ export const deleteTickets = async (req, res) => {
     });
   }
 };
+
+export const updateTicket = async (req, res) => {
+
+  try {
+
+    const {
+      titre,
+      description,
+      localisation,
+      typeProbleme
+    } = req.body;
+
+    /*
+    |--------------------------------------------------------------------------
+    | VERIFIER LE PROPRIETAIRE
+    |--------------------------------------------------------------------------
+    */
+
+    const check = await pool.query(
+
+      `
+      SELECT * FROM tickets
+
+      WHERE id = $1
+      `,
+      [req.params.id]
+    );
+
+    if (check.rows.length == 0) {
+
+      return res.status(404).json({
+        message: "Ticket introuvable"
+      });
+    }
+
+    const ticket = check.rows[0];
+
+    /*
+    |--------------------------------------------------------------------------
+    | SECURITY
+    |--------------------------------------------------------------------------
+    */
+
+    if (ticket.utilisateur_id != req.user.id) {
+
+      return res.status(403).json({
+        message: "Non autorisé"
+      });
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE
+    |--------------------------------------------------------------------------
+    */
+
+    const result = await pool.query(
+
+      `
+      UPDATE tickets
+
+      SET
+        titre = $1,
+        description = $2,
+        localisation = $3,
+        type_probleme = $4
+
+      WHERE id = $5
+
+      RETURNING *
+      `,
+      [
+        titre,
+        description,
+        localisation,
+        typeProbleme,
+        req.params.id
+      ]
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | SOCKET.IO
+    |--------------------------------------------------------------------------
+    */
+
+    req.io.emit(
+      "ticket-updated",
+      result.rows[0]
+    );
+
+    res.json(result.rows[0]);
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      message: err.message
+    });
+  }
+};

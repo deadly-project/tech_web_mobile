@@ -49,10 +49,58 @@ class _TicketDetailPageState
 
   List commentaires = [];
 
+  /*
+  |--------------------------------------------------------------------------
+  | CONTROLLERS MODIFICATION
+  |--------------------------------------------------------------------------
+  */
+
+  late TextEditingController titreController;
+
+  late TextEditingController descriptionController;
+
+  late TextEditingController localisationController;
+
+  late String typeProbleme;
+
+  final List<String> types = [
+
+    "Connexion",
+
+    "Routeur",
+
+    "Switch",
+
+    "Wifi",
+
+    "Câble",
+
+    "Serveur",
+
+    "DNS",
+
+    "Autre"
+  ];
+
   @override
   void initState() {
 
     super.initState();
+
+    titreController = TextEditingController(
+      text: widget.ticket.titre,
+    );
+
+    descriptionController = TextEditingController(
+      text: widget.ticket.description,
+    );
+
+    localisationController = TextEditingController(
+      text: widget.ticket.localisation,
+    );
+
+    typeProbleme =
+        widget.ticket.typeProbleme;
 
     initData();
   }
@@ -206,6 +254,8 @@ class _TicketDetailPageState
 
       commentController.clear();
 
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context)
           .showSnackBar(
 
@@ -218,6 +268,8 @@ class _TicketDetailPageState
       );
 
     } catch (e) {
+
+      if (!mounted) return;
 
       ScaffoldMessenger.of(context)
           .showSnackBar(
@@ -259,6 +311,8 @@ class _TicketDetailPageState
             status;
       });
 
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context)
           .showSnackBar(
 
@@ -272,6 +326,8 @@ class _TicketDetailPageState
 
     } catch (e) {
 
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context)
           .showSnackBar(
 
@@ -283,119 +339,330 @@ class _TicketDetailPageState
       );
     }
   }
-/*
-|--------------------------------------------------------------------------
-| DELETE TICKET
-|--------------------------------------------------------------------------
-*/
 
-Future<void> deleteTicket() async {
+  /*
+  |--------------------------------------------------------------------------
+  | UPDATE TICKET
+  |--------------------------------------------------------------------------
+  */
 
-  try {
+  Future<void> updateTicket() async {
 
-    await api.deleteTicket(
-      widget.ticket.id,
-    );
+    try {
 
-    if (!mounted) return;
+      await api.updateTicket(
 
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
+        widget.ticket.id,
 
-      const SnackBar(
+        {
 
-        content: Text(
-          "Ticket supprimé",
-        ),
-      ),
-    );
+          "titre":
+              titreController.text,
 
-    Navigator.pop(context);
+          "description":
+              descriptionController.text,
 
-  } catch (e) {
+          "localisation":
+              localisationController.text,
 
-    if (!mounted) return;
-
-    ScaffoldMessenger.of(context)
-        .showSnackBar(
-
-      SnackBar(
-        content: Text(
-          e.toString(),
-        ),
-      ),
-    );
-  }
-}
-
-/*
-|--------------------------------------------------------------------------
-| CONFIRM DELETE
-|--------------------------------------------------------------------------
-*/
-
-Future<void> confirmDelete() async {
-
-  final confirm = await showDialog<bool>(
-
-    context: context,
-
-    builder: (context) {
-
-      return AlertDialog(
-
-        title: const Text(
-          "Supprimer le ticket",
-        ),
-
-        content: const Text(
-          "Voulez-vous vraiment supprimer ce ticket ?",
-        ),
-
-        actions: [
-
-          TextButton(
-
-            onPressed: () {
-
-              Navigator.pop(
-                context,
-                false,
-              );
-            },
-
-            child: const Text(
-              "Annuler",
-            ),
-          ),
-
-          ElevatedButton(
-
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
-
-            onPressed: () {
-
-              Navigator.pop(
-                context,
-                true,
-              );
-            },
-
-            child: const Text(
-              "Supprimer",
-            ),
-          ),
-        ],
+          "typeProbleme":
+              typeProbleme
+        },
       );
-    },
-  );
 
-  if (confirm == true) {
-    await deleteTicket();
+      setState(() {
+
+        widget.ticket.titre =
+            titreController.text;
+
+        widget.ticket.description =
+            descriptionController.text;
+
+        widget.ticket.localisation =
+            localisationController.text;
+
+        widget.ticket.typeProbleme =
+            typeProbleme;
+      });
+
+      if (!mounted) return;
+
+      Navigator.pop(context);
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        const SnackBar(
+
+          content: Text(
+            "Ticket modifié avec succès",
+          ),
+        ),
+      );
+
+    } catch (e) {
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        SnackBar(
+          content: Text(
+            e.toString(),
+          ),
+        ),
+      );
+    }
   }
-}
+
+  /*
+  |--------------------------------------------------------------------------
+  | SHOW UPDATE DIALOG
+  |--------------------------------------------------------------------------
+  */
+
+  Future<void> showUpdateDialog() async {
+
+    await showDialog(
+
+      context: context,
+
+      builder: (context) {
+
+        return AlertDialog(
+
+          title: const Text(
+            "Modifier Ticket",
+          ),
+
+          content: SingleChildScrollView(
+
+            child: Column(
+
+              mainAxisSize: MainAxisSize.min,
+
+              children: [
+
+                TextField(
+
+                  controller:
+                      titreController,
+
+                  decoration:
+                      const InputDecoration(
+                    labelText: "Titre",
+                  ),
+                ),
+
+                const SizedBox(height: 15),
+
+                TextField(
+
+                  controller:
+                      localisationController,
+
+                  decoration:
+                      const InputDecoration(
+                    labelText:
+                        "Localisation",
+                  ),
+                ),
+
+                const SizedBox(height: 15),
+
+                DropdownButtonFormField<String>(
+
+                  initialValue:
+                      typeProbleme,
+
+                  items: types.map(
+
+                    (e) {
+
+                      return DropdownMenuItem(
+
+                        value: e,
+
+                        child: Text(e),
+                      );
+                    },
+                  ).toList(),
+
+                  onChanged: (value) {
+
+                    typeProbleme =
+                        value!;
+                  },
+
+                  decoration:
+                      const InputDecoration(
+                    labelText:
+                        "Type problème",
+                  ),
+                ),
+
+                const SizedBox(height: 15),
+
+                TextField(
+
+                  controller:
+                      descriptionController,
+
+                  maxLines: 4,
+
+                  decoration:
+                      const InputDecoration(
+                    labelText:
+                        "Description",
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          actions: [
+
+            TextButton(
+
+              onPressed: () {
+
+                Navigator.pop(context);
+              },
+
+              child: const Text(
+                "Annuler",
+              ),
+            ),
+
+            ElevatedButton(
+
+              onPressed: updateTicket,
+
+              child: const Text(
+                "Modifier",
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | DELETE TICKET
+  |--------------------------------------------------------------------------
+  */
+
+  Future<void> deleteTicket() async {
+
+    try {
+
+      await api.deleteTicket(
+        widget.ticket.id,
+      );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        const SnackBar(
+
+          content: Text(
+            "Ticket supprimé",
+          ),
+        ),
+      );
+
+      Navigator.pop(context);
+
+    } catch (e) {
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+
+        SnackBar(
+          content: Text(
+            e.toString(),
+          ),
+        ),
+      );
+    }
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | CONFIRM DELETE
+  |--------------------------------------------------------------------------
+  */
+
+  Future<void> confirmDelete() async {
+
+    final confirm = await showDialog<bool>(
+
+      context: context,
+
+      builder: (context) {
+
+        return AlertDialog(
+
+          title: const Text(
+            "Supprimer le ticket",
+          ),
+
+          content: const Text(
+            "Voulez-vous vraiment supprimer ce ticket ?",
+          ),
+
+          actions: [
+
+            TextButton(
+
+              onPressed: () {
+
+                Navigator.pop(
+                  context,
+                  false,
+                );
+              },
+
+              child: const Text(
+                "Annuler",
+              ),
+            ),
+
+            ElevatedButton(
+
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+
+              onPressed: () {
+
+                Navigator.pop(
+                  context,
+                  true,
+                );
+              },
+
+              child: const Text(
+                "Supprimer",
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirm == true) {
+      await deleteTicket();
+    }
+  }
+
   /*
   |--------------------------------------------------------------------------
   | UI
@@ -414,12 +681,6 @@ Future<void> confirmDelete() async {
         ),
 
         actions: [
-
-          /*
-          |--------------------------------------------------------------------------
-          | DELETE TICKET
-          |--------------------------------------------------------------------------
-          */
 
           if (isOwner() || isAdmin())
 
@@ -447,12 +708,6 @@ Future<void> confirmDelete() async {
 
           children: [
 
-            /*
-            |--------------------------------------------------------------------------
-            | TITLE
-            |--------------------------------------------------------------------------
-            */
-
             Text(
 
               widget.ticket.titre,
@@ -467,12 +722,6 @@ Future<void> confirmDelete() async {
             ),
 
             const SizedBox(height: 15),
-
-            /*
-            |--------------------------------------------------------------------------
-            | STATUS
-            |--------------------------------------------------------------------------
-            */
 
             Container(
 
@@ -511,12 +760,6 @@ Future<void> confirmDelete() async {
             ),
 
             const SizedBox(height: 30),
-
-            /*
-            |--------------------------------------------------------------------------
-            | DESCRIPTION
-            |--------------------------------------------------------------------------
-            */
 
             const Text(
 
@@ -558,15 +801,8 @@ Future<void> confirmDelete() async {
 
                   ElevatedButton.icon(
 
-                    onPressed: () {
-
-                      /*
-                      |--------------------------------------------------------------------------
-                      | PAGE MODIFICATION
-                      |--------------------------------------------------------------------------
-                      */
-
-                    },
+                    onPressed:
+                        showUpdateDialog,
 
                     icon: const Icon(
                       Icons.edit,
@@ -658,12 +894,6 @@ Future<void> confirmDelete() async {
               const SizedBox(height: 30),
             ],
 
-            /*
-            |--------------------------------------------------------------------------
-            | COMMENTS
-            |--------------------------------------------------------------------------
-            */
-
             const Text(
 
               "Commentaires",
@@ -678,12 +908,6 @@ Future<void> confirmDelete() async {
             ),
 
             const SizedBox(height: 15),
-
-            /*
-            |--------------------------------------------------------------------------
-            | COMMENT INPUT
-            |--------------------------------------------------------------------------
-            */
 
             if (isTechnician()) ...[
 
@@ -738,12 +962,6 @@ Future<void> confirmDelete() async {
 
               const SizedBox(height: 20),
             ],
-
-            /*
-            |--------------------------------------------------------------------------
-            | COMMENT LIST
-            |--------------------------------------------------------------------------
-            */
 
             ...commentaires.map(
 
