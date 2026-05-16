@@ -283,50 +283,119 @@ class _TicketDetailPageState
       );
     }
   }
+/*
+|--------------------------------------------------------------------------
+| DELETE TICKET
+|--------------------------------------------------------------------------
+*/
 
-  /*
-  |--------------------------------------------------------------------------
-  | DELETE TICKET
-  |--------------------------------------------------------------------------
-  */
+Future<void> deleteTicket() async {
 
-  Future<void> deleteTicket() async {
+  try {
 
-    try {
+    await api.deleteTicket(
+      widget.ticket.id,
+    );
 
-      await api.deleteTicket(
-        widget.ticket.id,
-      );
+    if (!mounted) return;
 
-      if (!mounted) return;
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
+      const SnackBar(
 
-        const SnackBar(
-
-          content: Text(
-            "Ticket supprimé",
-          ),
+        content: Text(
+          "Ticket supprimé",
         ),
-      );
+      ),
+    );
 
-      Navigator.pop(context);
+    Navigator.pop(context);
 
-    } catch (e) {
+  } catch (e) {
 
-      ScaffoldMessenger.of(context)
-          .showSnackBar(
+    if (!mounted) return;
 
-        SnackBar(
-          content: Text(
-            e.toString(),
-          ),
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
+
+      SnackBar(
+        content: Text(
+          e.toString(),
         ),
-      );
-    }
+      ),
+    );
   }
+}
 
+/*
+|--------------------------------------------------------------------------
+| CONFIRM DELETE
+|--------------------------------------------------------------------------
+*/
+
+Future<void> confirmDelete() async {
+
+  final confirm = await showDialog<bool>(
+
+    context: context,
+
+    builder: (context) {
+
+      return AlertDialog(
+
+        title: const Text(
+          "Supprimer le ticket",
+        ),
+
+        content: const Text(
+          "Voulez-vous vraiment supprimer ce ticket ?",
+        ),
+
+        actions: [
+
+          TextButton(
+
+            onPressed: () {
+
+              Navigator.pop(
+                context,
+                false,
+              );
+            },
+
+            child: const Text(
+              "Annuler",
+            ),
+          ),
+
+          ElevatedButton(
+
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+            ),
+
+            onPressed: () {
+
+              Navigator.pop(
+                context,
+                true,
+              );
+            },
+
+            child: const Text(
+              "Supprimer",
+            ),
+          ),
+        ],
+      );
+    },
+  );
+
+  if (confirm == true) {
+    await deleteTicket();
+  }
+}
   /*
   |--------------------------------------------------------------------------
   | UI
@@ -357,7 +426,7 @@ class _TicketDetailPageState
             IconButton(
 
               onPressed:
-                  deleteTicket,
+                  confirmDelete,
 
               icon: const Icon(
                 Icons.delete,

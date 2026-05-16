@@ -55,8 +55,10 @@ export const getTickets = async (req, res) => {
 
     const result = await pool.query(
       `
-      SELECT * FROM tickets
-      ORDER BY created_at DESC
+      SELECT t.*, u.username AS auteur_username 
+      FROM tickets t
+      LEFT JOIN utilisateur u ON t.utilisateur_id = u.id_user
+      ORDER BY t.created_at DESC
       `
     );
 
@@ -203,6 +205,49 @@ export const getComments = async (req, res) => {
     res.json(result.rows);
 
   } catch (err) {
+
+    res.status(500).json({
+      message: err.message
+    });
+  }
+};
+
+export const deleteTickets = async (req, res) => {
+
+  try {
+
+    const result = await pool.query(
+
+      `
+      DELETE FROM tickets
+
+      WHERE id = $1
+
+      RETURNING *
+      `,
+      [req.params.id]
+    );
+
+    if (result.rows.length === 0) {
+
+      return res.status(404).json({
+        message: "Ticket introuvable"
+      });
+    }
+
+    req.io.emit(
+      "ticket-deleted",
+      result.rows[0]
+    );
+
+    res.json({
+      message: "Ticket supprimé",
+      ticket: result.rows[0]
+    });
+
+  } catch (err) {
+
+    console.error(err);
 
     res.status(500).json({
       message: err.message
